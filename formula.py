@@ -34,7 +34,7 @@ plt.show()
 itaa=v/np.arctanh(v)
 #itaa2=2*v/np.log((1+v)/(1-v))
 plt.plot(v,itaa)
-plt.plot(v,itaa2,'r')
+#plt.plot(v,itaa2,'r')
 plt.xlabel('v')
 plt.ylabel('η')
 plt.show()
@@ -73,18 +73,17 @@ plt.xlabel('η')
 plt.legend(['h(η)','η^(-1/2)h(η)'])# make legend
 plt.show()
 
-
-
 #define a model that we can use straddle price to predict the implied volatility
 class Model:
     straddle,strike, spot, texp,intr,divr= None, None, None, None, None, None
-    def __init__(self,straddle,strike, spot, texp, intr=0, divr=0):
+    def __init__(self,straddle,strike, spot, texp, intr=0, divr=0,flag=1):
         self.texp = texp
         self.straddle = straddle
         self.intr = intr
         self.divr = divr
         self.spot = spot
         self.strike = strike
+        self.flag = flag
      #define h(η)  
     def h_a(self,ita=0.5):
         a=[  3.994961687345134*10**1	,
@@ -105,13 +104,42 @@ class Model:
                     3.608817108375034*10**3		,
                     2.067719486400926*10**2		,
                     1.174240599306013*10**1		]
-        for i in range(0,7):
+        c_cal=[([0]*8) for i in range(8)]
+        for i in range(8):
+            for j in range(i+1):
+                c_cal[i][j]=a[i]*(-1)**j*math.factorial(i)/(math.factorial(j)*math.factorial(i-j))
+        c=[0]*8
+        for i in range(8):
+            for j in range(8):
+                c[i]+=c_cal[j][i]
+        
+      
+        d_cal=[([0]*10) for i in range(10)]
+        for i in range(10):
+            for j in range(i+1):
+                d_cal[i][j]=b[i]*(-1)**j*math.factorial(i)/(math.factorial(j)*math.factorial(i-j))
+
+        d=[0]*10
+        for i in range(10):
+            for j in range(10):
+                d[i]+=d_cal[j][i]
+        if self.flag==1:
             up=0
-            up=up+a[i]*ita**i;
-        for i in range(0,9):
+            for i in range(8):
+                up=up+a[i]*ita**i;
             down=0
-            down=down+b[i]*ita**i;
-        return np.sqrt(ita)*up/down
+            for i in range(10):
+                down=down+b[i]*ita**i;
+            return np.sqrt(ita)*up/down
+        else:
+            ita_rev=1-ita
+            up=0
+            for i in range(8):
+                up=up+c[i]*ita_rev**i;
+            down=0
+            for i in range(10):
+                down=down+d[i]*ita_rev**i;
+            return np.sqrt(1-ita_rev)*up/down
     #define ita  
     def ita(self,v):
              ita_1=v/np.arctanh(v)  
@@ -129,5 +157,5 @@ class Model:
             return vol
         
 #test        
-sb = Model(17,5, 20, 50, intr=0, divr=0)
+sb = Model(30,5, 20, 50, intr=0, divr=0,flag=1)
 print(sb.impvol())
