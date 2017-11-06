@@ -41,24 +41,6 @@ plt.show()
 
 
 #Figure 3
-'''hitaa=np.sqrt(2/math.pi)*itaa/d
-hitaa2=np.sqrt(itaa/math.pi)
-ithitaa=hitaa/np.sqrt(itaa)
-plt.plot(itaa,hitaa,'.')
-plt.plot(itaa,ithitaa, 'r')
-plt.xlabel('η')
-plt.legend(['h(η)','η^(1/2)h(η)'])# make legend
-plt.show()
-
-#use sqrt(η/2π) appromix h(η)
-hitaa2=np.sqrt(itaa/math.pi)
-ithitaa2=hitaa2/np.sqrt(itaa)
-plt.plot(itaa,hitaa2,'.')
-plt.plot(itaa,ithitaa2, 'r')
-plt.xlabel('η')
-plt.legend(['h(η)','η^(-1/2)h(η)'])# make legend
-plt.show()'''
-
 
 #use sqrt(η/2π) appromix h(η)
 N=10000
@@ -157,5 +139,21 @@ class Model:
             return vol
         
 #test        
+
+sb = Model(30,5, 20, 50, intr=0, divr=0,flag=0)
+print(sb.impvol())
 sb = Model(30,5, 20, 50, intr=0, divr=0,flag=1)
+print(sb.impvol())
+straddle=15+0.1**(15)   
+strike=5
+spot= 20
+v=(spot-strike)/straddle
+ita_1=v/np.arctanh(v)
+
+print("η=%f"%(ita_1))
+print("use η")
+sb = Model(straddle,strike, spot, 50, intr=0, divr=0,flag=0)
+print(sb.impvol())
+print("use 1-η")
+sb = Model(straddle,strike, spot, 50, intr=0, divr=0,flag=1)
 print(sb.impvol())
