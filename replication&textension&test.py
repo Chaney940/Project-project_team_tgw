@@ -68,6 +68,12 @@ for i in range(N):
      f=diff(x,v,i)
      g.append(f.subs(v,0)/math.factorial(i))
 g.reverse()
+y=ln(2/v-1)
+p=[]
+for i in range(N):
+     f=diff(y,v,i)
+     p.append((-1)*f.subs(v,1)/math.factorial(i))
+p.reverse()
 
 '''for i in range(N):
     for j in range(i+1):
@@ -150,8 +156,8 @@ class Model:
             ita_1=v/np.arctanh(v)
             ita_2=2*v/np.polyval(g,v)
             v1=1-v
-            print(np.polyval(g,v1)/2)
-            ita_3=2*v/np.polyval(g,v1) #ita_3 is wrong
+            print(np.polyval(p,v)/2)
+            ita_3=2*v/np.polyval(p,v) #ita_3 is wrong
             print('ita_1')            
             print(ita_1)
             print('ita_2')
