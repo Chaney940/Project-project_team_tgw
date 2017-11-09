@@ -11,7 +11,7 @@ import math
 import matplotlib.pyplot as plt
 
 
-'''
+
 #Figure 1
 d=np.linspace(-3,3,num=100)
 v=d/(d*(2*ss.norm.cdf(d)-1)+2*ss.norm.pdf(d))
@@ -58,7 +58,6 @@ plt.legend(['h(η)','η^(-1/2)h(η)'])# make legend
 plt.show()
 
 
-'''
 
 N=100
 v=Symbol("v")
@@ -75,16 +74,6 @@ for i in range(N):
      p.append((-1)*f.subs(v,1)/math.factorial(i))
 p.reverse()
 
-'''for i in range(N):
-    for j in range(i+1):
-        p_cal[i][j]=g[i]*(-1)**j*math.factorial(i)/(math.factorial(j)*math.factorial(i-j))
-p=[0]*N
-for i in range(N):
-            for j in range(N):
-                p[i]+=p_cal[j][i]
-p.reverse()
-g.reverse()
-print(g)'''
 
 #define a model that we can use straddle price to predict the implied volatility
 class Model:
