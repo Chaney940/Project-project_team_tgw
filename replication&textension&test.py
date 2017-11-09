@@ -11,7 +11,6 @@ import math
 import matplotlib.pyplot as plt
 
 
-'''
 #Figure 1
 d=np.linspace(-3,3,num=100)
 v=d/(d*(2*ss.norm.cdf(d)-1)+2*ss.norm.pdf(d))
@@ -58,33 +57,22 @@ plt.legend(['h(η)','η^(-1/2)h(η)'])# make legend
 plt.show()
 
 
-'''
 
-N=100
+M=10
 v=Symbol("v")
 x=ln(1+v)-ln(1-v)
 g=[]
-for i in range(N):
+for i in range(M):
      f=diff(x,v,i)
      g.append(f.subs(v,0)/math.factorial(i))
 g.reverse()
 y=ln(2/v-1)
 p=[]
-for i in range(N):
+for i in range(M):
      f=diff(y,v,i)
      p.append((-1)*f.subs(v,1)/math.factorial(i))
 p.reverse()
 
-'''for i in range(N):
-    for j in range(i+1):
-        p_cal[i][j]=g[i]*(-1)**j*math.factorial(i)/(math.factorial(j)*math.factorial(i-j))
-p=[0]*N
-for i in range(N):
-            for j in range(N):
-                p[i]+=p_cal[j][i]
-p.reverse()
-g.reverse()
-print(g)'''
 
 #define a model that we can use straddle price to predict the implied volatility
 class Model:
@@ -151,20 +139,13 @@ class Model:
 
     #define ita  
     def ita(self,v):
-            print(np.arctanh(v))
-            print(np.polyval(g,v)/2)
+        if v<0.1**(3):
+            ita_1=np.float64(2*v/np.polyval(g,v))
+        elif v>0.99:
+            ita_1=np.float64(2*v/np.polyval(p,v))
+        else:
             ita_1=v/np.arctanh(v)
-            ita_2=2*v/np.polyval(g,v)
-            v1=1-v
-            print(np.polyval(p,v)/2)
-            ita_3=2*v/np.polyval(p,v) #ita_3 is wrong
-            print('ita_1')            
-            print(ita_1)
-            print('ita_2')
-            print(ita_2)
-            print('ita_3')
-            print(ita_3)
-            return ita_1
+        return ita_1
        # if self.flag==1:
  
          
@@ -182,7 +163,7 @@ class Model:
             return vol
         
 #test        
-straddle=15+10**(15)   
+straddle=15+10**15
 strike=5
 spot= 20
 sb = Model(straddle,strike, spot, 50, intr=0, divr=0,flag=0)
